@@ -217,6 +217,52 @@ const output = builder.produce(config.overrides || {});
 console.log(output);
 ```
 
+## CI/CD Integration
+
+### Using the GitHub Workflow from Another Repository
+
+You can use the reusable workflow to automate dashboard generation in your own
+repository. Create a `.github/workflows/generate-dashboard.yml` file in your
+repo:
+
+```yaml
+name: Generate Dashboard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  generate:
+    uses: gunzip/opex-dashboard-ts/.github/workflows/generate.yml@main
+    with:
+      # mandatory inputs:
+      config_path: ./config/dashboard-config.yaml
+      output_dir: ./generated
+      # optional inputs with defaults:
+      pr_title: "Update operational dashboard"
+      pr_body: "Automated update of dashboard terraform from OpenAPI spec"
+      base_branch: main
+```
+
+This workflow will:
+
+1. Generate the dashboard using your configuration
+2. Commit changes to a new branch
+3. Create a pull request for review
+
+### Workflow Inputs
+
+- `config_path` (required): Path to your YAML configuration file
+- `output_dir` (required): Directory to save generated files
+- `template_type` (optional): Template type (`azure-dashboard` or
+  `azure-dashboard-raw`, default: `azure-dashboard`)
+- `pr_title` (optional): Title for the generated pull request
+- `pr_body` (optional): Description for the generated pull request
+- `base_branch` (optional): Base branch for the pull request (default: `main`)
+
 ## Architecture
 
 ### Project Structure
