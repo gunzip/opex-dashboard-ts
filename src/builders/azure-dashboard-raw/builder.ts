@@ -1,0 +1,71 @@
+/**
+ * Azure Dashboard Raw Builder.
+ * Generates raw Azure dashboard JSON from OpenAPI specification.
+ */
+
+import type { TemplateContext } from "../../core/template/context.schema.js";
+import type { OA3Spec } from "./builder.schema.js";
+
+import { Builder } from "../base.js";
+import { OA3SpecSchema } from "./builder.schema.js";
+import { extractEndpoints } from "./endpoints-extractor.js";
+import { azureDashboardRawTemplate } from "./template.js";
+
+export class AzDashboardRawBuilder extends Builder<TemplateContext> {
+  private evaluationFrequency: number;
+  private evaluationTimeWindow: number;
+  private eventOccurrences: number;
+  private oa3Spec: OA3Spec;
+
+  constructor(
+    oa3Spec: unknown,
+    name: string,
+    resourceType: string,
+    location: string,
+    timespan: string,
+    evaluationFrequency: number,
+    evaluationTimeWindow: number,
+    eventOccurrences: number,
+    resources: string[],
+  ) {
+    super(azureDashboardRawTemplate, {
+      action_groups_ids: [],
+      data_source_id: resources[0],
+      endpoints: {},
+      evaluation_frequency: evaluationFrequency,
+      time_window: evaluationTimeWindow,
+      event_occurrences: eventOccurrences,
+      hosts: [],
+      location,
+      name,
+      resource_type: resourceType,
+      timespan,
+    });
+
+    // Validate OA3 spec structure
+    this.oa3Spec = OA3SpecSchema.parse(oa3Spec);
+    this.evaluationFrequency = evaluationFrequency;
+    this.evaluationTimeWindow = evaluationTimeWindow;
+    this.eventOccurrences = eventOccurrences;
+  }
+
+  /**
+   * Render the template by extracting endpoints from OA3 spec and merging with overrides.
+   */
+  produce(values: Partial<TemplateContext> = {}): string {
+    // Extract hosts and endpoints from OA3 spec
+    const { endpoints, hosts } = extractEndpoints(
+      this.oa3Spec,
+      this.evaluationFrequency,
+      this.evaluationTimeWindow,
+      this.eventOccurrences,
+    );
+
+    // Update properties with extracted data
+    this.properties.hosts = hosts;
+    this.properties.endpoints = endpoints;
+
+    // Render template with merged values
+    return super.produce(values);
+  }
+}

@@ -1,0 +1,53 @@
+name: Generate Dashboard
+
+on:
+  push:
+    paths:
+      - "examples/*.yaml"
+      - "test/data/*.yaml"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install package
+        run: npm install @pagopa/opex-dashboard-ts --registry=https://npm.pkg.github.com
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate terraform
+        run: npx opex_dashboard generate -t azure-dashboard -c examples/azure_dashboard_config.yaml --package generated
+
+      - name: Commit and push changes
+        id: commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add generated/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m 'Generate dashboard terraform'
+            git push origin HEAD:generate-dashboard
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.commit.outputs.changed == 'true'
+        run: gh pr create --title "Generate dashboard terraform" --body "Automated generation of dashboard terraform from OpenAPI spec" --base main --head generate-dashboard
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
