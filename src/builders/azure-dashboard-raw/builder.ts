@@ -33,12 +33,12 @@ export class AzDashboardRawBuilder extends Builder<TemplateContext> {
       data_source_id: resources[0],
       endpoints: {},
       evaluation_frequency: evaluationFrequency,
-      time_window: evaluationTimeWindow,
       event_occurrences: eventOccurrences,
       hosts: [],
       location,
       name,
       resource_type: resourceType,
+      time_window: evaluationTimeWindow,
       timespan,
     });
 

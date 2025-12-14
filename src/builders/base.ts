@@ -39,6 +39,7 @@ export abstract class Builder<
 
   package(
     outputPath: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     values: Partial<TProps> = {} as Partial<TProps>,
   ): void {
     throw new Error(
