@@ -4,13 +4,10 @@
     "outDir": "./dist",
     "sourceMap": true,
     "declaration": true,
-    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "allowImportingTsExtensions": false,
-    "customConditions": ["node"]
+    }
   },
   "include": ["src/**/*", "test/**/*"],
   "exclude": ["tsup.config.ts", "dist", "vitest.config.ts", "scripts"]
