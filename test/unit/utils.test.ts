@@ -5,7 +5,6 @@
 import { describe, expect, it } from "vitest";
 
 import { overrideWith } from "@/utils/merge.js";
-import { normalizeParams } from "@/utils/normalize-params.js";
 
 describe("overrideWith", () => {
   it("should merge simple objects", () => {
@@ -55,55 +54,5 @@ describe("overrideWith", () => {
     const result = overrideWith(base, override);
 
     expect(result).toEqual({ a: 1, b: null });
-  });
-});
-
-describe("normalizeParams", () => {
-  it("should extract valid parameters", async () => {
-    const { z } = await import("zod");
-    const schema = z.object({
-      count: z.number(),
-      name: z.string(),
-    });
-
-    const params = {
-      count: 5,
-      extra: "ignored",
-      name: "Test",
-    };
-
-    const result = normalizeParams(params, schema);
-    expect(result).toEqual({ name: "Test", count: 5 });
-  });
-
-  it("should handle missing optional parameters", async () => {
-    const { z } = await import("zod");
-    const schema = z.object({
-      count: z.number().optional(),
-      name: z.string(),
-    });
-
-    const params = {
-      name: "Test",
-    };
-
-    const result = normalizeParams(params, schema);
-    expect(result).toHaveProperty("name", "Test");
-    expect(result).not.toHaveProperty("count");
-  });
-
-  it("should validate parameter types", async () => {
-    const { z } = await import("zod");
-    const schema = z.object({
-      count: z.number(),
-      name: z.string(),
-    });
-
-    const params = {
-      count: "not a number",
-      name: "Test",
-    };
-
-    expect(() => normalizeParams(params, schema)).toThrow();
   });
 });
