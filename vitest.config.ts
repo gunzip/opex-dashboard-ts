@@ -8,9 +8,6 @@ export default defineConfig({
     },
   },
   test: {
-    typecheck: {
-      tsconfig: "./tsconfig.test.json",
-    },
     coverage: {
       exclude: ["dist", "node_modules", "test", "**/*.config.ts", "scripts"],
       provider: "v8",
@@ -27,5 +24,8 @@ export default defineConfig({
     environment: "node",
     globals: true,
     setupFiles: ["./test/setup.ts"],
+    typecheck: {
+      tsconfig: "./tsconfig.test.json",
+    },
   },
 });
