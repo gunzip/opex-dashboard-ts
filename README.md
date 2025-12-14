@@ -1,7 +1,7 @@
 # OpEx Dashboard
 
-**Generate standardized PagoPA's Operational Excellence dashboards from OpenAPI
-3 specifications.**
+**Generate standardized Operational Excellence dashboards from OpenAPI 3
+specifications.**
 
 ## Features
 

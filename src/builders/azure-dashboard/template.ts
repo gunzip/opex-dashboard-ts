@@ -1,6 +1,5 @@
 /**
  * Terraform template for Azure Dashboard with query rule alerts.
- * Migrated from Django template to TypeScript template literal.
  */
 
 import type { TemplateContext } from "../../core/template/context.schema.js";

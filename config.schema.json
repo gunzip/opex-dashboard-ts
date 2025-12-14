@@ -1,5 +1,5 @@
 {
-  "$id": "https://github.com/pagopa/opex-dashboard/blob/main/config.schema.json",
+  "$id": "https://github.com/gunzip/opex-dashboard-ts/blob/main/config.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Configuration schema for generating operational dashboards from OpenAPI specifications",
   "title": "OpEx Dashboard Configuration",

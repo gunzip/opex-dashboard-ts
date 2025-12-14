@@ -24,7 +24,7 @@ jobs:
           node-version: "22"
 
       - name: Install package
-        run: npm install @pagopa/opex-dashboard-ts --registry=https://npm.pkg.github.com
+        run: npm install @gunzip/opex-dashboard-ts --registry=https://npm.pkg.github.com
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

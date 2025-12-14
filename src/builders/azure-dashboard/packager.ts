@@ -1,6 +1,5 @@
 /**
  * Terraform package creation utilities.
- * Handles PagoPA conventions for Terraform project structure.
  */
 
 import * as fs from "fs";

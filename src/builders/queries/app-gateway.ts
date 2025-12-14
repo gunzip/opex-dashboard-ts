@@ -1,6 +1,5 @@
 /**
  * Kusto query templates for App Gateway resources.
- * Migrated from Django templates to TypeScript template literals.
  */
 
 import type { TemplateContext } from "../../core/template/context.schema.js";
@@ -25,7 +24,7 @@ export function availabilityQuery(ctx: QueryContext): string {
   const hostsJson = JSON.stringify(ctx.hosts);
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
-  // NOTE: Threshold inversion logic to match legacy Django template behavior
+  // NOTE: Threshold inversion logic to match legacy template behavior
   // For thresholds other than the default (0.99), invert to (1 - threshold)
   // This converts availability thresholds to error rate thresholds
   const displayThreshold =

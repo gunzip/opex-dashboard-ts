@@ -51,7 +51,7 @@ export class AzDashboardBuilder extends Builder<TemplateContext> {
   }
 
   /**
-   * Package Terraform configuration with PagoPA conventions.
+   * Package Terraform configuration.
    * Creates opex.tf and generates terraform assets (main.tf, variables.tf, env/).
    */
   package(outputPath: string, values: Partial<TemplateContext> = {}): void {

@@ -1,6 +1,5 @@
 /**
  * Azure Dashboard Raw JSON template.
- * Migrated from Django template to TypeScript template literal using JSON.stringify.
  */
 
 /* eslint-disable perfectionist/sort-objects, perfectionist/sort-modules */
