@@ -55,4 +55,20 @@ describe("overrideWith", () => {
 
     expect(result).toEqual({ a: 1, b: null });
   });
+
+  it("should replace arrays", () => {
+    const base = { a: [1, 2] };
+    const override = { a: [3, 4] };
+    const result = overrideWith(base, override);
+
+    expect(result).toEqual({ a: [3, 4] });
+  });
+
+  it("should handle non-plain objects", () => {
+    const base = { a: 1 };
+    const override = { a: new Date() };
+    const result = overrideWith(base, override);
+
+    expect(result.a).toBeInstanceOf(Date);
+  });
 });
