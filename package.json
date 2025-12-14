@@ -1,5 +1,5 @@
 {
-  "name": "opex-dashboard-ts",
+  "name": "@gunzip/opex-dashboard-ts",
   "version": "0.1.0",
   "description": "Generate operational dashboards from OpenAPI specifications",
   "main": "dist/index.js",
