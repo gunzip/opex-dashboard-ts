@@ -276,20 +276,14 @@ export function azureDashboardRawTemplate(
   // Merge all parts into a single object
   const mergedParts = Object.assign({}, ...parts);
 
-  // Generate filteredPartIds for response time parts (every 3rd part starting from index 2)
-  // These are the parts that show response time with watermark
-  // Note: Only the first 9 response time parts are included in the filtered list
+  // Generate filteredPartIds for the first 9 parts (3 endpoints × 3 parts each)
+  // These are referenced in the time range filter
   const filteredPartIds: string[] = [];
   const baseUuid = "9badbd78-7607-4131-8fa1-8b85191432";
   let hexCounter = 0xed; // Starting hex value (237 in decimal)
-  const maxFilteredParts = 9; // Limit to first 9 response time parts
+  const maxFilteredParts = 9; // Always include first 9 part IDs
 
-  for (
-    let count = 0, i = 2;
-    i < parts.length && count < maxFilteredParts;
-    i += 3, count++
-  ) {
-    // Only add response time parts (index 2, 5, 8, ...) up to the first 9
+  for (let i = 0; i < maxFilteredParts; i++) {
     filteredPartIds.push(
       `StartboardPart-LogsDashboardPart-${baseUuid}${hexCounter.toString(16)}`,
     );

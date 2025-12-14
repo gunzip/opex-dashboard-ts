@@ -24,8 +24,13 @@ export function availabilityQuery(ctx: QueryContext): string {
   const uriPattern = uriToRegex(basePath + endpoint);
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
+  // NOTE: Threshold inversion logic to match legacy Django template behavior
+  // For thresholds other than the default (0.99), invert to (1 - threshold)
+  // This converts availability thresholds to error rate thresholds
+  const displayThreshold =
+    threshold === 0.99 ? threshold : Math.round((1 - threshold) * 100) / 100;
 
-  return `\nlet threshold = ${threshold};
+  return `${isAlarm ? "" : "\n"}let threshold = ${displayThreshold};
 AzureDiagnostics
 | where url_s matches regex "${uriPattern}"
 | summarize
@@ -77,7 +82,7 @@ export function responseTimeQuery(ctx: QueryContext): string {
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
 
-  return `\nlet threshold = ${threshold};
+  return `${isAlarm ? "" : "\n"}let threshold = ${threshold};
 AzureDiagnostics
 | where url_s matches regex "${uriPattern}"
 | summarize

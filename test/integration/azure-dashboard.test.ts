@@ -1,9 +1,10 @@
+ 
 /**
  * Integration tests for Azure dashboard generation.
  * Tests end-to-end workflow from config to dashboard output.
  */
 
-import { mkdtempSync, readdirSync, rmSync, statSync } from "fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -13,6 +14,200 @@ import { AzDashboardBuilder } from "@/builders/azure-dashboard/index.js";
 import { type BuilderType, createBuilder } from "@/core/builder-factory.js";
 import { loadConfig } from "@/core/config/index.js";
 import { OA3Resolver } from "@/core/resolver/index.js";
+
+describe("Azure Dashboard Integration Tests - Snapshots", () => {
+  describe("snapshot tests with io_backend_light spec", () => {
+    const actionGroups = [
+      "/subscriptions/uuid/resourceGroups/my-rg/providers/microsoft.insights/actionGroups/my-action-group-email",
+      "/subscriptions/uuid/resourceGroups/my-rg/providers/microsoft.insights/actionGroups/my-action-group-slack",
+    ];
+    const dataSourceId = "data_source_id";
+    const resourceIds = [
+      "/subscriptions/uuid/resourceGroups/io-p-rg-external/providers/Microsoft.Network/applicationGateways/io-p-appgateway",
+    ];
+
+    it("should match iobackend_light_no_overrides snapshot exactly", async () => {
+      const specPath = "test/data/io_backend_light.yaml";
+      const resolver = new OA3Resolver(specPath);
+      const oa3Spec = await resolver.resolve();
+
+      const rawBuilder = new AzDashboardRawBuilder(
+        oa3Spec,
+        "PROD-IO/IO_App_Availability",
+        "app-gateway",
+        "West Europe",
+        "5m",
+        10,
+        20,
+        2,
+        resourceIds,
+      );
+
+      const builder = new AzDashboardBuilder(
+        rawBuilder,
+        "PROD-IO/IO_App_Availability",
+        "app-gateway",
+        "West Europe",
+        "5m",
+        10,
+        20,
+        2,
+        dataSourceId,
+        actionGroups,
+        undefined,
+      );
+
+      const tempDir = mkdtempSync(join(tmpdir(), "opex-snapshot-test-"));
+      
+      try {
+        builder.package(tempDir, {});
+        
+        const opexTfPath = join(tempDir, "opex.tf");
+        const output = readFileSync(opexTfPath, "utf-8");
+        
+        const snapshot = readFileSync(
+          "test/snapshots/iobackend_light_no_overrides.txt",
+          "utf-8",
+        );
+
+        expect(output).toBe(snapshot);
+      } finally {
+        rmSync(tempDir, { force: true, recursive: true });
+      }
+    });
+
+    it("should match iobackend_light_overrides snapshot exactly", async () => {
+      const specPath = "test/data/io_backend_light.yaml";
+      const resolver = new OA3Resolver(specPath);
+      const oa3Spec = await resolver.resolve();
+
+      const rawBuilder = new AzDashboardRawBuilder(
+        oa3Spec,
+        "PROD-IO/IO_App_Availability",
+        "app-gateway",
+        "West Europe",
+        "5m",
+        10,
+        20,
+        2,
+        resourceIds,
+      );
+
+      const builder = new AzDashboardBuilder(
+        rawBuilder,
+        "PROD-IO/IO_App_Availability",
+        "app-gateway",
+        "West Europe",
+        "5m",
+        10,
+        20,
+        2,
+        dataSourceId,
+        actionGroups,
+        undefined,
+      );
+
+      const tempDir = mkdtempSync(join(tmpdir(), "opex-snapshot-test-"));
+      
+      try {
+        const overrides = {
+          endpoints: {
+            "/api/v1/services/{service_id}": {
+              availability_evaluation_frequency: 111,
+              availability_evaluation_time_window: 222,
+              availability_event_occurrences: 333,
+              availability_threshold: 0.88,
+              response_time_evaluation_frequency: 444,
+              response_time_evaluation_time_window: 555,
+              response_time_event_occurrences: 666,
+              response_time_threshold: 0.23,
+            },
+          },
+        };
+
+        builder.package(tempDir, overrides);
+        
+        const opexTfPath = join(tempDir, "opex.tf");
+        const output = readFileSync(opexTfPath, "utf-8");
+        
+        const snapshot = readFileSync(
+          "test/snapshots/iobackend_light_overrides.txt",
+          "utf-8",
+        );
+
+        expect(output).toBe(snapshot);
+      } finally {
+        rmSync(tempDir, { force: true, recursive: true });
+      }
+    });
+
+    it("should match iobackend_light_overrides_base_path snapshot exactly", async () => {
+      const specPath = "test/data/io_backend_light.yaml";
+      const resolver = new OA3Resolver(specPath);
+      const oa3Spec = await resolver.resolve();
+
+      const rawBuilder = new AzDashboardRawBuilder(
+        oa3Spec,
+        "PROD-IO/IO_App_Availability",
+        "app-gateway",
+        "West Europe",
+        "5m",
+        10,
+        20,
+        2,
+        resourceIds,
+      );
+
+      const builder = new AzDashboardBuilder(
+        rawBuilder,
+        "PROD-IO/IO_App_Availability",
+        "app-gateway",
+        "West Europe",
+        "5m",
+        10,
+        20,
+        2,
+        dataSourceId,
+        actionGroups,
+        undefined,
+      );
+
+      const tempDir = mkdtempSync(join(tmpdir(), "opex-snapshot-test-"));
+      
+      try {
+        const overrides = {
+          base_path: "basepath_override",
+          endpoints: {
+            "/api/v1/services/{service_id}": {
+              availability_evaluation_frequency: 111,
+              availability_evaluation_time_window: 222,
+              availability_event_occurrences: 333,
+              availability_threshold: 0.88,
+              response_time_evaluation_frequency: 444,
+              response_time_evaluation_time_window: 555,
+              response_time_event_occurrences: 666,
+              response_time_threshold: 0.23,
+            },
+          },
+        };
+
+        builder.package(tempDir, overrides);
+        
+        const opexTfPath = join(tempDir, "opex.tf");
+        const output = readFileSync(opexTfPath, "utf-8");
+        
+        const snapshot = readFileSync(
+          "test/snapshots/iobackend_light_overrides_base_path.txt",
+          "utf-8",
+        );
+
+        expect(output).toBe(snapshot);
+      } finally {
+        rmSync(tempDir, { force: true, recursive: true });
+      }
+    });
+  });
+});
 
 describe("Azure Dashboard Integration Tests - Raw Builder", () => {
   describe("azure-dashboard-raw builder", () => {

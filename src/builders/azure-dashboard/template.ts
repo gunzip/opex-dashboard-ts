@@ -29,7 +29,8 @@ export function azureDashboardTerraformTemplate(
       ? queries.apiManagement
       : queries.appGateway;
 
-  return `locals {
+  return `
+locals {
   name                = "\${var.prefix}-\${var.env_short}-${name}"
   dashboard_base_addr = "https://portal.azure.com/#@pagopait.onmicrosoft.com/dashboard/arm"
 }
@@ -49,6 +50,7 @@ resource "azurerm_portal_dashboard" "this" {
 
   tags = var.tags
 }
+
 
 ${Object.entries(context.endpoints)
   .map(([endpoint, propsUnknown], i) => {
@@ -136,5 +138,6 @@ ${responseTimeQuery}
 }
 `;
   })
-  .join("")}`;
+  .join("\n")}
+`;
 }

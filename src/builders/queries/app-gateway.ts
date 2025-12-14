@@ -25,9 +25,14 @@ export function availabilityQuery(ctx: QueryContext): string {
   const hostsJson = JSON.stringify(ctx.hosts);
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
+  // NOTE: Threshold inversion logic to match legacy Django template behavior
+  // For thresholds other than the default (0.99), invert to (1 - threshold)
+  // This converts availability thresholds to error rate thresholds
+  const displayThreshold =
+    threshold === 0.99 ? threshold : Math.round((1 - threshold) * 100) / 100;
 
-  return `\nlet api_hosts = datatable (name: string) ${hostsJson};
-let threshold = ${threshold};
+  return `${isAlarm ? "" : "\n"}let api_hosts = datatable (name: string) ${hostsJson};
+let threshold = ${displayThreshold};
 AzureDiagnostics
 | where originalHost_s in (api_hosts)
 | where requestUri_s matches regex "${uriPattern}"
@@ -84,7 +89,7 @@ export function responseTimeQuery(ctx: QueryContext): string {
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
 
-  return `\nlet api_hosts = datatable (name: string) ${hostsJson};
+  return `${isAlarm ? "" : "\n"}let api_hosts = datatable (name: string) ${hostsJson};
 let threshold = ${threshold};
 AzureDiagnostics
 | where originalHost_s in (api_hosts)
