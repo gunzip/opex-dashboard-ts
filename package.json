@@ -1,5 +1,5 @@
 {
-  "name": "@pagopa/opex-dashboard-ts",
+  "name": "opex-dashboard-ts",
   "version": "0.1.0",
   "description": "Generate operational dashboards from OpenAPI specifications",
   "main": "dist/index.js",
@@ -40,7 +40,6 @@
     "monitoring",
     "observability"
   ],
-  "author": "PagoPA",
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
     "commander": "^14.0.2",
