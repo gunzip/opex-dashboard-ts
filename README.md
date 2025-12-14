@@ -43,10 +43,12 @@ npx opex-dashboard generate --help
 ### Local Development
 
 ```bash
-git clone https://github.com/pagopa/opex-dashboard.git
-cd opex-dashboard
-npm install
-npm run build
+git clone https://github.com/gunzip/opex-dashboard-ts.git
+cd opex-dashboard-ts
+pnpm install
+pnpm run generate:schema
+pnpm run build
+pnpm run dev
 ```
 
 ## Quick Start
@@ -178,7 +180,7 @@ comment at the top of your YAML configuration file:
 The schema is:
 
 - **Automatically generated** during build from Zod schemas using
-  `npm run generate:schema`
+  `pnpm run generate:schema`
 - **Synchronized** with TypeScript types - any changes to configuration
   structure are reflected immediately
 - **Versioned** - matches the package version for compatibility tracking
@@ -259,15 +261,19 @@ npm run build
 ### Scripts
 
 ```bash
-npm run build            # Compile TypeScript
-npm run dev              # Watch mode
-npm run typecheck        # Type checking
-npm test                 # Run tests
-npm run test:watch       # Test watch mode
-npm run test:coverage    # Coverage report
-npm run test:unit        # Run unit tests only
-npm run test:integration # Run integration tests only
-npm run lint             # ESLint
+pnpm run generate:schema        # Auto-generate config.schema.json from Zod
+pnpm run build                  # Bundle with tsup (ESM output)
+pnpm run dev                    # Watch mode for development
+pnpm run typecheck              # TypeScript compilation check
+pnpm test                       # Run all tests (unit + integration)
+pnpm run test:coverage          # Coverage report (80% thresholds)
+pnpm run test:unit              # Unit tests only
+pnpm run test:integration       # Integration tests only
+pnpm run test:watch             # TDD watch mode
+pnpm run lint                   # ESLint with auto-fix
+pnpm run lint:check             # Lint check only
+pnpm run format                 # Prettier format
+pnpm run format:check           # Format check only
 ```
 
 ### Testing
@@ -282,9 +288,9 @@ The project includes comprehensive unit and integration tests with Vitest:
 Run tests with automatic cleanup:
 
 ```bash
-npm test                 # Run all tests
-npm run test:coverage    # Run with coverage report
-npm run test:watch       # Watch mode for TDD
+pnpm test                 # Run all tests
+pnpm run test:coverage    # Run with coverage report
+pnpm run test:watch       # Watch mode for TDD
 ```
 
 Tests automatically:
@@ -292,6 +298,16 @@ Tests automatically:
 - Clean up temporary directories after each test
 - Use unique temp directories to avoid conflicts
 - Validate outputs against existing fixtures
+
+### Code Quality
+
+```bash
+pnpm run lint                  # ESLint with auto-fix
+pnpm run lint:check            # Lint check only
+pnpm run format                # Prettier format
+pnpm run format:check          # Format check only
+pnpm run typecheck             # TypeScript compilation check
+```
 
 ### Code Style
 
@@ -309,25 +325,3 @@ Tests automatically:
 3. Commit changes: `git commit -m 'Add my feature'`
 4. Push to branch: `git push origin feature/my-feature`
 5. Open Pull Request
-
-### Development Guidelines
-
-- Follow existing code style
-- Add tests for new features
-- Update documentation
-- Keep files small and focused
-- Use Zod for validation
-
-## License
-
-MIT © PagoPA
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/pagopa/opex-dashboard/issues)
-- **Discussions**:
-  [GitHub Discussions](https://github.com/pagopa/opex-dashboard/discussions)
-
----
-
-Built with ❤️ by PagoPA team
