@@ -1,5 +1,8 @@
 {
   "name": "@gunzip/opex-dashboard-ts",
+  "repository": {
+    "url": "https://github.com/gunzip/opex-dashboard-ts"
+  },
   "version": "0.2.1",
   "description": "Generate operational dashboards from OpenAPI specifications",
   "main": "dist/index.js",
