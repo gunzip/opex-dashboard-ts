@@ -8,6 +8,9 @@ resource_type: app-gateway
 action_groups:
   - /subscriptions/uuid/resourceGroups/my-rg/providers/microsoft.insights/actionGroups/my-action-group-email
   - /subscriptions/uuid/resourceGroups/my-rg/providers/microsoft.insights/actionGroups/my-action-group-slack
+# Global threshold defaults (can be overridden per-endpoint)
+availability_threshold: 0.99 # Default: 0.99 (99%)
+response_time_threshold: 1.0 # Default: 1.0 second
 overrides:
   hosts: # Use these hosts instead of those inside the OpenApi spec
     - https://example.com

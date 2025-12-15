@@ -13,6 +13,8 @@ export const EndpointSchema = z.record(
     availability_evaluation_time_window: z.number().optional(),
     availability_event_occurrences: z.number().optional(),
     availability_threshold: z.number().optional(),
+    method: z.string().optional(),
+    path: z.string().optional(),
     response_time_evaluation_frequency: z.number().optional(),
     response_time_evaluation_time_window: z.number().optional(),
     response_time_event_occurrences: z.number().optional(),
@@ -31,6 +33,7 @@ const QueryConfigSchema = z.object({
 // Schema for main template context
 export const TemplateContextSchema = z.object({
   action_groups_ids: z.array(z.string()),
+  availability_threshold: z.number().optional(),
   base_path: z.string().optional(),
   dashboard_properties: z.string().optional(), // For Terraform template
   data_source_id: z.string(),
@@ -42,6 +45,7 @@ export const TemplateContextSchema = z.object({
   name: z.string(),
   queries: QueryConfigSchema.optional(),
   resource_type: z.string(),
+  response_time_threshold: z.number().optional(),
   time_window: z.number().optional(),
   timespan: z.string().optional(),
 });

@@ -14,6 +14,18 @@ import {
 } from "../../constants/index.js";
 import { ConfigError } from "../../core/errors/index.js";
 
+/** Valid HTTP methods for endpoint generation */
+const VALID_HTTP_METHODS = new Set([
+  "delete",
+  "get",
+  "head",
+  "options",
+  "patch",
+  "post",
+  "put",
+  "trace",
+]);
+
 interface ExtractedEndpoints {
   endpoints: Record<string, EndpointConfig>;
   hosts: string[];
@@ -28,6 +40,8 @@ export function extractEndpoints(
   evaluationFrequency: number,
   evaluationTimeWindow: number,
   eventOccurrences: number,
+  availabilityThreshold?: number,
+  responseTimeThreshold?: number,
 ): ExtractedEndpoints {
   const hosts: string[] = [];
   const endpoints: Record<string, EndpointConfig> = {};
@@ -37,11 +51,13 @@ export function extractEndpoints(
     availability_evaluation_frequency: evaluationFrequency,
     availability_evaluation_time_window: evaluationTimeWindow,
     availability_event_occurrences: eventOccurrences,
-    availability_threshold: DEFAULT_AVAILABILITY_THRESHOLD,
+    availability_threshold:
+      availabilityThreshold ?? DEFAULT_AVAILABILITY_THRESHOLD,
     response_time_evaluation_frequency: evaluationFrequency,
     response_time_evaluation_time_window: evaluationTimeWindow,
     response_time_event_occurrences: eventOccurrences,
-    response_time_threshold: DEFAULT_RESPONSE_TIME_THRESHOLD,
+    response_time_threshold:
+      responseTimeThreshold ?? DEFAULT_RESPONSE_TIME_THRESHOLD,
   };
 
   // Extract hosts from OA3 (servers) or OA2 (host/basePath)
@@ -81,8 +97,21 @@ export function extractEndpoints(
 
     for (const endpointPath of endpointPaths) {
       const normalizedPath = normalizePath(parsedUrl.pathname, endpointPath);
-      if (!endpoints[normalizedPath]) {
-        endpoints[normalizedPath] = { ...endpointDefaults };
+      const pathItem = oa3Spec.paths[endpointPath];
+
+      // Check if any valid HTTP methods exist for this path
+      const hasValidMethods =
+        pathItem &&
+        typeof pathItem === "object" &&
+        Object.keys(pathItem).some((method) =>
+          VALID_HTTP_METHODS.has(method.toLowerCase()),
+        );
+
+      if (hasValidMethods && !endpoints[normalizedPath]) {
+        // Use path as key (without method prefix for backward compatibility)
+        endpoints[normalizedPath] = {
+          ...endpointDefaults,
+        };
         orderedPaths.push(normalizedPath);
       }
     }

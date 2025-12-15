@@ -134,6 +134,13 @@ export const ConfigSchema = z.object({
     .describe(
       "Array of Azure Action Group resource IDs for alarm notifications",
     ),
+  availability_threshold: z
+    .number()
+    .optional()
+    .default(DEFAULTS.availability_threshold)
+    .describe(
+      "Default minimum availability percentage (0-1). Default: 0.99 (99%)",
+    ),
   data_source: z
     .string()
     .describe(
@@ -180,6 +187,11 @@ export const ConfigSchema = z.object({
     .describe(
       "Type of Azure resource to monitor: app-gateway (Application Gateway) or api-management (API Management). Default: app-gateway",
     ),
+  response_time_threshold: z
+    .number()
+    .optional()
+    .default(DEFAULTS.response_time_threshold)
+    .describe("Default maximum response time in seconds. Default: 1.0"),
   terraform: TerraformConfigSchema.optional().describe(
     "Optional Terraform and environment-specific configuration",
   ),

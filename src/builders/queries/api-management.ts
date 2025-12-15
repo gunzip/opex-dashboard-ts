@@ -20,7 +20,10 @@ export function availabilityQuery(ctx: QueryContext): string {
   const endpoint = ctx.endpoint;
   const basePath = ctx.base_path ?? "";
   const threshold = ctx.threshold ?? 0.99;
-  const uriPattern = uriToRegex(basePath + endpoint);
+  const props = ctx.endpoints?.[endpoint];
+  const method = props?.method;
+  const path = props?.path ?? endpoint;
+  const uriPattern = uriToRegex(basePath + path);
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
   // NOTE: Threshold inversion logic to match legacy template behavior
@@ -31,10 +34,10 @@ export function availabilityQuery(ctx: QueryContext): string {
 
   return `${isAlarm ? "" : "\n"}let threshold = ${displayThreshold};
 AzureDiagnostics
-| where url_s matches regex "${uriPattern}"
+| where url_s matches regex "${uriPattern}"${method ? `\n| where method_s == "${method}"` : ""}
 | summarize
   Total=count(),
-  Success=count(responseCode_d < 500) by bin(TimeGenerated, ${timespan})
+  Success=count(responseCode_d < 500 and responseCode_d != 0) by bin(TimeGenerated, ${timespan})
 | extend availability=toreal(Success) / Total
 ${
   isAlarm
@@ -52,12 +55,15 @@ ${
 export function responseCodesQuery(ctx: QueryContext): string {
   const endpoint = ctx.endpoint;
   const basePath = ctx.base_path ?? "";
-  const uriPattern = uriToRegex(basePath + endpoint);
+  const props = ctx.endpoints?.[endpoint];
+  const method = props?.method;
+  const path = props?.path ?? endpoint;
+  const uriPattern = uriToRegex(basePath + path);
   const timespan = ctx.timespan || "5m";
 
   return `\nlet api_url = "${uriPattern}";
 AzureDiagnostics
-| where url_s matches regex api_url
+| where url_s matches regex api_url${method ? `\n| where method_s == "${method}"` : ""}
 | extend HTTPStatus = case(
   responseCode_d between (100 .. 199), "1XX",
   responseCode_d between (200 .. 299), "2XX",
@@ -77,14 +83,17 @@ export function responseTimeQuery(ctx: QueryContext): string {
   const endpoint = ctx.endpoint;
   const basePath = ctx.base_path ?? "";
   const threshold = ctx.threshold ?? 1;
-  const uriPattern = uriToRegex(basePath + endpoint);
+  const props = ctx.endpoints?.[endpoint];
+  const method = props?.method;
+  const path = props?.path ?? endpoint;
+  const uriPattern = uriToRegex(basePath + path);
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
   const percentile = ctx.queries?.response_time_percentile ?? 95;
 
   return `${isAlarm ? "" : "\n"}let threshold = ${threshold};
 AzureDiagnostics
-| where url_s matches regex "${uriPattern}"
+| where url_s matches regex "${uriPattern}"${method ? `\n| where method_s == "${method}"` : ""}
 | summarize
     watermark=threshold,
     duration_percentile_${percentile}=percentiles(todouble(DurationMs)/1000, ${percentile}) by bin(TimeGenerated, ${timespan})

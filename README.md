@@ -148,9 +148,11 @@ action_groups: string[] # Array of Azure Action Group IDs
 # Optional fields (with defaults)
 resource_type: app-gateway | api-management # Default: app-gateway
 timespan: string # Default: 5m
-evaluation_frequency: number # Default: 10 (minutes)
-evaluation_time_window: number # Default: 20 (minutes)
-event_occurrences: number # Default: 1
+evaluation_frequency: integer # Default: 10 (minutes)
+evaluation_time_window: integer # Default: 20 (minutes)
+event_occurrences: integer # Default: 1
+availability_threshold`: float # Default: 0.99 (99%)
+response_time_threshold: float # Default: 1.0 second
 
 ### Terraform Configuration
 
@@ -177,8 +179,9 @@ placeholders.
 # Override defaults for specific endpoints
 
 overrides: hosts: # Use custom hosts instead of spec hosts -
-https://api.example.com endpoints: /api/v1/users/{id}: availability_threshold:
-0.95 response_time_threshold: 2 # ... (see examples/ for full options)
+https://api.example.com endpoints: GET /api/v1/users/{id}: # Note: endpoints now
+include HTTP method availability_threshold: 0.95 response_time_threshold: 2 #
+... (see examples/ for full options)
 
 ````
 

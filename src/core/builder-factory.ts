@@ -12,6 +12,7 @@ import { InvalidBuilderError } from "./errors/index.js";
 import { OA3Resolver } from "./resolver/index.js";
 
 interface AzureRawBuilderParams {
+  availability_threshold?: number;
   evaluation_frequency: number;
   evaluation_time_window: number;
   event_occurrences: number;
@@ -24,6 +25,7 @@ interface AzureRawBuilderParams {
   resolver: OA3Resolver;
   resource_type: string;
   resources: string[];
+  response_time_threshold?: number;
   terraform?: TerraformConfig;
   timespan: string;
 }
@@ -53,6 +55,8 @@ async function createAzureRawBuilder(
     params.event_occurrences,
     params.resources,
     params.queries,
+    params.availability_threshold,
+    params.response_time_threshold,
   );
 }
 

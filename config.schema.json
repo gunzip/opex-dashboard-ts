@@ -13,6 +13,11 @@
         "type": "string"
       }
     },
+    "availability_threshold": {
+      "description": "Default minimum availability percentage (0-1). Default: 0.99 (99%)",
+      "default": 0.99,
+      "type": "number"
+    },
     "data_source": {
       "description": "Azure resource ID for metrics data source (Application Gateway or API Management)",
       "type": "string"
@@ -171,6 +176,11 @@
         "app-gateway",
         "api-management"
       ]
+    },
+    "response_time_threshold": {
+      "description": "Default maximum response time in seconds. Default: 1.0",
+      "default": 1,
+      "type": "number"
     },
     "terraform": {
       "description": "Optional Terraform and environment-specific configuration",
@@ -341,10 +351,12 @@
   },
   "required": [
     "action_groups",
+    "availability_threshold",
     "data_source",
     "location",
     "name",
-    "oa3_spec"
+    "oa3_spec",
+    "response_time_threshold"
   ],
   "additionalProperties": false
 }

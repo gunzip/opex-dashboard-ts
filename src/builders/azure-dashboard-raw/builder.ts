@@ -31,9 +31,12 @@ export class AzDashboardRawBuilder extends Builder<TemplateContext> {
       response_time_percentile: number;
       status_code_categories: string[];
     },
+    availabilityThreshold?: number,
+    responseTimeThreshold?: number,
   ) {
     super(azureDashboardRawTemplate, {
       action_groups_ids: [],
+      availability_threshold: availabilityThreshold,
       data_source_id: resources[0],
       endpoints: {},
       evaluation_frequency: evaluationFrequency,
@@ -43,6 +46,7 @@ export class AzDashboardRawBuilder extends Builder<TemplateContext> {
       name,
       queries,
       resource_type: resourceType,
+      response_time_threshold: responseTimeThreshold,
       time_window: evaluationTimeWindow,
       timespan,
     });
@@ -64,6 +68,8 @@ export class AzDashboardRawBuilder extends Builder<TemplateContext> {
       this.evaluationFrequency,
       this.evaluationTimeWindow,
       this.eventOccurrences,
+      this.properties.availability_threshold,
+      this.properties.response_time_threshold,
     );
 
     // Update properties with extracted data

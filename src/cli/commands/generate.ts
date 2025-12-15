@@ -89,6 +89,7 @@ async function generateHandler(options: {
     // Prepare builder parameters
     const builderParams = {
       action_groups_ids: config.action_groups,
+      availability_threshold: config.availability_threshold,
       data_source_id: config.data_source,
       evaluation_frequency: config.evaluation_frequency,
       evaluation_time_window: config.evaluation_time_window,
@@ -99,6 +100,7 @@ async function generateHandler(options: {
       resolver,
       resource_type: config.resource_type,
       resources: [config.data_source],
+      response_time_threshold: config.response_time_threshold,
       terraform: config.terraform,
       timespan: config.timespan,
     };

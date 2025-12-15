@@ -21,6 +21,8 @@ export const EndpointConfigSchema = z.object({
   availability_evaluation_time_window: z.number().default(TIME_WINDOW_MINUTES),
   availability_event_occurrences: z.number().default(EVENT_OCCURRENCES),
   availability_threshold: z.number().default(DEFAULT_AVAILABILITY_THRESHOLD),
+  method: z.string().optional(),
+  path: z.string().optional(),
   response_time_evaluation_frequency: z
     .number()
     .default(EVALUATION_FREQUENCY_MINUTES),

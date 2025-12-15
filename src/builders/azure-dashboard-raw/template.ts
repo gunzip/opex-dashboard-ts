@@ -232,7 +232,26 @@ export function azureDashboardRawTemplate(
   // Generate parts for each endpoint (3 parts per endpoint)
   const endpointEntries = Object.entries(context.endpoints);
   const parts = endpointEntries.flatMap(([endpoint, props], i) => {
+    // endpoint format: "METHOD /path" or "/path" (backward compatible)
+    // Parse method if present in endpoint key
+    const spaceIndex = endpoint.indexOf(" ");
+    const hasMethod = spaceIndex > 0;
+    let method = "";
+    let path = endpoint;
+
+    if (hasMethod) {
+      method = endpoint.substring(0, spaceIndex);
+      path = endpoint.substring(spaceIndex + 1);
+    }
+
     const fullPath = basePath + endpoint;
+
+    // Pass method and path to query functions if method is specified
+    const queryProps = {
+      ...props,
+      ...(method && { method, path }),
+    };
+
     const partIndex = i * 3;
     const yPosition = i * 4;
 
@@ -240,7 +259,7 @@ export function azureDashboardRawTemplate(
       createAvailabilityPart(
         context,
         endpoint,
-        props,
+        queryProps,
         resourceIds,
         timespan,
         fullPath,
@@ -261,7 +280,7 @@ export function azureDashboardRawTemplate(
       createResponseTimePart(
         context,
         endpoint,
-        props,
+        queryProps,
         resourceIds,
         timespan,
         fullPath,
