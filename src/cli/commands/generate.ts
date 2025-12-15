@@ -95,6 +95,7 @@ async function generateHandler(options: {
       event_occurrences: config.event_occurrences,
       location: config.location,
       name: config.name,
+      queries: config.queries || config.overrides?.queries,
       resolver,
       resource_type: config.resource_type,
       resources: [config.data_source],

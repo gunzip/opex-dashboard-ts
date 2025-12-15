@@ -17,6 +17,10 @@ interface AzureRawBuilderParams {
   event_occurrences: number;
   location: string;
   name: string;
+  queries?: {
+    response_time_percentile: number;
+    status_code_categories: string[];
+  };
   resolver: OA3Resolver;
   resource_type: string;
   resources: string[];
@@ -48,6 +52,7 @@ async function createAzureRawBuilder(
     params.evaluation_time_window,
     params.event_occurrences,
     params.resources,
+    params.queries,
   );
 }
 

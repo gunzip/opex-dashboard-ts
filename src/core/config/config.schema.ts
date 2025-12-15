@@ -55,6 +55,18 @@ const EndpointOverrideSchema = z.object({
     .describe("Maximum response time in seconds. Default: 1"),
 });
 
+// Schema for query configuration
+const QueryConfigSchema = z.object({
+  response_time_percentile: z
+    .number()
+    .default(95)
+    .describe("Percentile for response time queries. Default: 95"),
+  status_code_categories: z
+    .array(z.string())
+    .default(["1XX", "2XX", "3XX", "4XX", "5XX"])
+    .describe("HTTP status code categories for response codes queries"),
+});
+
 // Schema for overrides section
 const OverridesSchema = z.object({
   endpoints: z
@@ -69,6 +81,9 @@ const OverridesSchema = z.object({
     .describe(
       "Override host URLs from OpenAPI spec (e.g., https://example.com)",
     ),
+  queries: QueryConfigSchema.optional().describe(
+    "Optional query configuration overrides",
+  ),
 });
 
 // Schema for Terraform backend configuration
@@ -153,7 +168,10 @@ export const ConfigSchema = z.object({
       "Path or HTTP URL to OpenAPI 3.x specification file (supports OA2 and OA3)",
     ),
   overrides: OverridesSchema.optional().describe(
-    "Optional overrides for hosts and per-endpoint alarm thresholds",
+    "Optional overrides for hosts, per-endpoint alarm thresholds, and query configurations",
+  ),
+  queries: QueryConfigSchema.optional().describe(
+    "Optional global query configuration overrides",
   ),
   resource_type: z
     .enum(["app-gateway", "api-management"])
@@ -179,4 +197,5 @@ export type Config = z.infer<typeof ConfigSchema>;
 export type EndpointOverride = z.infer<typeof EndpointOverrideSchema>;
 export type EnvironmentConfig = z.infer<typeof EnvironmentConfigSchema>;
 export type Overrides = z.infer<typeof OverridesSchema>;
+export type QueryConfig = z.infer<typeof QueryConfigSchema>;
 export type TerraformConfig = z.infer<typeof TerraformConfigSchema>;

@@ -27,6 +27,10 @@ export class AzDashboardRawBuilder extends Builder<TemplateContext> {
     evaluationTimeWindow: number,
     eventOccurrences: number,
     resources: string[],
+    queries?: {
+      response_time_percentile: number;
+      status_code_categories: string[];
+    },
   ) {
     super(azureDashboardRawTemplate, {
       action_groups_ids: [],
@@ -37,6 +41,7 @@ export class AzDashboardRawBuilder extends Builder<TemplateContext> {
       hosts: [],
       location,
       name,
+      queries,
       resource_type: resourceType,
       time_window: evaluationTimeWindow,
       timespan,

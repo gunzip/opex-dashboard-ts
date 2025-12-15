@@ -87,6 +87,7 @@ export function responseTimeQuery(ctx: QueryContext): string {
   const hostsJson = JSON.stringify(ctx.hosts);
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
+  const percentile = ctx.queries?.response_time_percentile ?? 95;
 
   return `${isAlarm ? "" : "\n"}let api_hosts = datatable (name: string) ${hostsJson};
 let threshold = ${threshold};
@@ -95,7 +96,7 @@ AzureDiagnostics
 | where requestUri_s matches regex "${uriPattern}"
 | summarize
     watermark=threshold,
-    duration_percentile_95=percentiles(timeTaken_d, 95) by bin(TimeGenerated, ${timespan})
-${isAlarm ? "| where duration_percentile_95 > threshold" : `| render timechart with (xtitle = "time", ytitle= "response time(s)")`}
+    duration_percentile_${percentile}=percentiles(timeTaken_d, ${percentile}) by bin(TimeGenerated, ${timespan})
+${isAlarm ? `| where duration_percentile_${percentile} > threshold` : `| render timechart with (xtitle = "time", ytitle= "response time(s)")`}
 `;
 }

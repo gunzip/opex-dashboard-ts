@@ -20,6 +20,14 @@ export const EndpointSchema = z.record(
   }),
 );
 
+// Schema for query configuration
+const QueryConfigSchema = z.object({
+  response_time_percentile: z.number().default(95),
+  status_code_categories: z
+    .array(z.string())
+    .default(["1XX", "2XX", "3XX", "4XX", "5XX"]),
+});
+
 // Schema for main template context
 export const TemplateContextSchema = z.object({
   action_groups_ids: z.array(z.string()),
@@ -32,6 +40,7 @@ export const TemplateContextSchema = z.object({
   hosts: z.array(z.string()),
   location: z.string(),
   name: z.string(),
+  queries: QueryConfigSchema.optional(),
   resource_type: z.string(),
   time_window: z.number().optional(),
   timespan: z.string().optional(),

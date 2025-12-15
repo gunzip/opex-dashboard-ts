@@ -45,7 +45,7 @@
       "type": "string"
     },
     "overrides": {
-      "description": "Optional overrides for hosts and per-endpoint alarm thresholds",
+      "description": "Optional overrides for hosts, per-endpoint alarm thresholds, and query configurations",
       "type": "object",
       "properties": {
         "endpoints": {
@@ -99,8 +99,68 @@
           "items": {
             "type": "string"
           }
+        },
+        "queries": {
+          "description": "Optional query configuration overrides",
+          "type": "object",
+          "properties": {
+            "response_time_percentile": {
+              "description": "Percentile for response time queries. Default: 95",
+              "default": 95,
+              "type": "number"
+            },
+            "status_code_categories": {
+              "description": "HTTP status code categories for response codes queries",
+              "default": [
+                "1XX",
+                "2XX",
+                "3XX",
+                "4XX",
+                "5XX"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "response_time_percentile",
+            "status_code_categories"
+          ],
+          "additionalProperties": false
         }
       },
+      "additionalProperties": false
+    },
+    "queries": {
+      "description": "Optional global query configuration overrides",
+      "type": "object",
+      "properties": {
+        "response_time_percentile": {
+          "description": "Percentile for response time queries. Default: 95",
+          "default": 95,
+          "type": "number"
+        },
+        "status_code_categories": {
+          "description": "HTTP status code categories for response codes queries",
+          "default": [
+            "1XX",
+            "2XX",
+            "3XX",
+            "4XX",
+            "5XX"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "response_time_percentile",
+        "status_code_categories"
+      ],
       "additionalProperties": false
     },
     "resource_type": {
