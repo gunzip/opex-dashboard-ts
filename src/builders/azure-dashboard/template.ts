@@ -62,6 +62,7 @@ ${Object.entries(context.endpoints)
       endpoint,
       is_alarm: true,
       threshold: props.availability_threshold as number | undefined,
+      ...props,
     });
 
     // Response time alarm query
@@ -70,6 +71,7 @@ ${Object.entries(context.endpoints)
       endpoint,
       is_alarm: true,
       threshold: props.response_time_threshold as number | undefined,
+      ...props,
     });
 
     return `resource "azurerm_monitor_scheduled_query_rules_alert" "alarm_availability_${i}" {

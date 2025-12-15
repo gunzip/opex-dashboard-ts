@@ -73,8 +73,32 @@ export class AzDashboardBuilder extends Builder<TemplateContext> {
    * Render Terraform template with embedded dashboard JSON from raw builder.
    */
   produce(values: Partial<TemplateContext> = {}): string {
-    // Generate raw dashboard JSON
-    const rawJson = this.rawBuilder.produce(values);
+    // Normalize endpoint overrides to support "METHOD /path" format
+    // This must be done here as well to ensure Terraform alarms get correct paths
+    const normalizedValues = values.endpoints
+      ? (() => {
+          const normalizedEndpoints: typeof values.endpoints = {};
+
+          for (const [key, value] of Object.entries(values.endpoints)) {
+            const spaceIndex = key.indexOf(" ");
+            if (spaceIndex > 0) {
+              const method = key.substring(0, spaceIndex);
+              const path = key.substring(spaceIndex + 1);
+              normalizedEndpoints[path] = {
+                ...value,
+                method,
+              };
+            } else {
+              normalizedEndpoints[key] = value;
+            }
+          }
+
+          return { ...values, endpoints: normalizedEndpoints };
+        })()
+      : values;
+
+    // Generate raw dashboard JSON with normalized values
+    const rawJson = this.rawBuilder.produce(normalizedValues);
     const dashboard = JSON.parse(rawJson) as { properties: unknown };
 
     // Extract dashboard properties and format for Terraform
@@ -89,6 +113,6 @@ export class AzDashboardBuilder extends Builder<TemplateContext> {
     this.properties.hosts = rawProps.hosts;
     this.properties.endpoints = rawProps.endpoints;
 
-    return super.produce(values);
+    return super.produce(normalizedValues);
   }
 }

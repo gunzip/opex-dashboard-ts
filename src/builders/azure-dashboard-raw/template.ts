@@ -66,6 +66,7 @@ function createAvailabilityPart(
     endpoint,
     is_alarm: false,
     threshold: props.availability_threshold as number | undefined,
+    ...props, // Include method and path from queryProps
   });
 
   return {
@@ -106,6 +107,7 @@ function createAvailabilityPart(
 function createResponseCodesPart(
   ctx: TemplateContext,
   endpoint: string,
+  queryProps: Record<string, unknown>,
   resourceIds: string[],
   timespan: string,
   fullPath: string,
@@ -113,7 +115,11 @@ function createResponseCodesPart(
   yPosition: number,
   queryFns: typeof queries.apiManagement | typeof queries.appGateway,
 ) {
-  const responseCodesQuery = queryFns.responseCodesQuery({ ...ctx, endpoint });
+  const responseCodesQuery = queryFns.responseCodesQuery({
+    ...ctx,
+    endpoint,
+    ...queryProps, // Include method and path
+  });
 
   return {
     [`${partIndex}`]: {
@@ -170,6 +176,7 @@ function createResponseTimePart(
     endpoint,
     is_alarm: false,
     threshold: props.response_time_threshold as number | undefined,
+    ...props, // Include method and path from queryProps
   });
 
   return {
@@ -246,10 +253,12 @@ export function azureDashboardRawTemplate(
 
     const fullPath = basePath + endpoint;
 
-    // Pass method and path to query functions if method is specified
+    // Pass method and path to query functions
+    // method and path will be undefined if not specified (backward compatible)
     const queryProps = {
       ...props,
-      ...(method && { method, path }),
+      method: method || props.method,
+      path: path || props.path || endpoint,
     };
 
     const partIndex = i * 3;
@@ -270,6 +279,7 @@ export function azureDashboardRawTemplate(
       createResponseCodesPart(
         context,
         endpoint,
+        queryProps,
         resourceIds,
         timespan,
         fullPath,

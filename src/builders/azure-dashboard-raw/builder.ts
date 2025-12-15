@@ -76,7 +76,38 @@ export class AzDashboardRawBuilder extends Builder<TemplateContext> {
     this.properties.hosts = hosts;
     this.properties.endpoints = endpoints;
 
+    // Normalize endpoint overrides to support "METHOD /path" format
+    // Convert "METHOD /path" keys to "/path" keys with method in the value
+    const mergedValues = values.endpoints
+      ? (() => {
+          const normalizedEndpoints: typeof values.endpoints = {};
+
+          for (const [key, value] of Object.entries(values.endpoints)) {
+            // Check if key has "METHOD /path" format
+            const spaceIndex = key.indexOf(" ");
+            if (spaceIndex > 0) {
+              // Extract method and path
+              const method = key.substring(0, spaceIndex);
+              const path = key.substring(spaceIndex + 1);
+
+              // Only add as path-only key with method in the value
+              // Don't set props.path to avoid duplicating basePath in query functions
+              // This allows the "METHOD /path" override to match "/path" base
+              normalizedEndpoints[path] = {
+                ...value,
+                method,
+              };
+            } else {
+              // Keep path-only overrides as is
+              normalizedEndpoints[key] = value;
+            }
+          }
+
+          return { ...values, endpoints: normalizedEndpoints };
+        })()
+      : values;
+
     // Render template with merged values
-    return super.produce(values);
+    return super.produce(mergedValues);
   }
 }
