@@ -12,11 +12,10 @@ const program = new Command();
 
 program
   .name("opex_dashboard")
-  .description("Generate operational dashboards from OpenAPI 3 specifications")
-  .version("2.0.0");
+  .description("Generate operational dashboards from OpenAPI 3 specifications");
 
 // Register commands
-program.addCommand(createGenerateCommand());
+program.addCommand(createGenerateCommand()).version(__CLI_VERSION__);
 
 // Parse arguments
 program.parse(process.argv);

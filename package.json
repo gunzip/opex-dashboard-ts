@@ -1,6 +1,6 @@
 {
   "name": "@gunzip/opex-dashboard-ts",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generate operational dashboards from OpenAPI specifications",
   "main": "dist/index.js",
   "bin": {

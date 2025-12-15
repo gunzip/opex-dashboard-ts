@@ -1,18 +1,21 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
+  clean: true,
+  define: {
+    __CLI_VERSION__: `"${process.env.npm_package_version || "0.0.0"}"`,
+  },
+  dts: true,
   entry: ["src/cli/index.ts", "src/index.ts"],
   format: ["esm"],
-  dts: true,
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-  outDir: "dist",
   loader: {
-    ".kusto": "text",
-    ".tf": "text",
-    ".sh": "text",
     ".ini": "text",
+    ".kusto": "text",
+    ".sh": "text",
+    ".tf": "text",
     ".tfvars": "text",
   },
+  outDir: "dist",
+  sourcemap: true,
+  splitting: false,
 });
