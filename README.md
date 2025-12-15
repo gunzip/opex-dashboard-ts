@@ -136,7 +136,7 @@ Options:
 
 Create a YAML configuration file:
 
-```yaml
+````yaml
 # Required fields
 oa3_spec: string # Path or URL to OpenAPI 3 specification
 name: string # Dashboard name
@@ -168,20 +168,18 @@ terraform:
         key: string
     uat: # Similar to dev
     prod: # Similar to dev
-```
+````
 
-If not specified, default versions are used and environment files contain empty placeholders.
+If not specified, default versions are used and environment files contain empty
+placeholders.
 
 # Override defaults for specific endpoints
-overrides:
-  hosts: # Use custom hosts instead of spec hosts
-    - https://api.example.com
-  endpoints:
-    /api/v1/users/{id}:
-      availability_threshold: 0.95
-      response_time_threshold: 2
-      # ... (see examples/ for full options)
-```
+
+overrides: hosts: # Use custom hosts instead of spec hosts -
+https://api.example.com endpoints: /api/v1/users/{id}: availability_threshold:
+0.95 response_time_threshold: 2 # ... (see examples/ for full options)
+
+````
 
 See [`examples/`](./examples) directory for complete configuration samples.
 
@@ -196,7 +194,7 @@ comment at the top of your YAML configuration file:
 
 ```yaml
 # yaml-language-server: $schema=./config.schema.json
-```
+````
 
 The schema is:
 
