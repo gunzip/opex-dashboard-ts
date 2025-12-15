@@ -6,6 +6,7 @@
 
 import type { TemplateContext } from "../../core/template/context.schema.js";
 
+import { parseEndpointKey } from "../../utils/index.js";
 import * as queries from "../queries/index.js";
 
 /**
@@ -240,16 +241,7 @@ export function azureDashboardRawTemplate(
   const endpointEntries = Object.entries(context.endpoints);
   const parts = endpointEntries.flatMap(([endpoint, props], i) => {
     // endpoint format: "METHOD /path" or "/path" (backward compatible)
-    // Parse method if present in endpoint key
-    const spaceIndex = endpoint.indexOf(" ");
-    const hasMethod = spaceIndex > 0;
-    let method = "";
-    let path = endpoint;
-
-    if (hasMethod) {
-      method = endpoint.substring(0, spaceIndex);
-      path = endpoint.substring(spaceIndex + 1);
-    }
+    const parsed = parseEndpointKey(endpoint);
 
     const fullPath = basePath + endpoint;
 
@@ -257,8 +249,8 @@ export function azureDashboardRawTemplate(
     // method and path will be undefined if not specified (backward compatible)
     const queryProps = {
       ...props,
-      method: method || props.method,
-      path: path || props.path || endpoint,
+      method: parsed.method || props.method,
+      path: parsed.path || props.path || endpoint,
     };
 
     const partIndex = i * 3;

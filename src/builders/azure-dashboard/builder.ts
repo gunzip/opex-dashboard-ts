@@ -10,6 +10,7 @@ import * as path from "path";
 import type { TerraformConfig } from "../../core/config/config.schema.js";
 import type { TemplateContext } from "../../core/template/context.schema.js";
 
+import { normalizeEndpointKeys } from "../../utils/index.js";
 import { AzDashboardRawBuilder } from "../azure-dashboard-raw/index.js";
 import { Builder } from "../base.js";
 import { generateTerraformAssets } from "./packager.js";
@@ -76,25 +77,7 @@ export class AzDashboardBuilder extends Builder<TemplateContext> {
     // Normalize endpoint overrides to support "METHOD /path" format
     // This must be done here as well to ensure Terraform alarms get correct paths
     const normalizedValues = values.endpoints
-      ? (() => {
-          const normalizedEndpoints: typeof values.endpoints = {};
-
-          for (const [key, value] of Object.entries(values.endpoints)) {
-            const spaceIndex = key.indexOf(" ");
-            if (spaceIndex > 0) {
-              const method = key.substring(0, spaceIndex);
-              const path = key.substring(spaceIndex + 1);
-              normalizedEndpoints[path] = {
-                ...value,
-                method,
-              };
-            } else {
-              normalizedEndpoints[key] = value;
-            }
-          }
-
-          return { ...values, endpoints: normalizedEndpoints };
-        })()
+      ? { ...values, endpoints: normalizeEndpointKeys(values.endpoints) }
       : values;
 
     // Generate raw dashboard JSON with normalized values
