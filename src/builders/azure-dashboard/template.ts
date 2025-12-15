@@ -55,6 +55,8 @@ ${Object.entries(context.endpoints)
   .map(([endpoint, propsUnknown], i) => {
     const props = propsUnknown as Record<string, unknown>;
     const fullPath = basePath + endpoint;
+    const method = props.method as string | undefined;
+    const methodPrefix = method ? `${method} ` : "";
 
     // Availability alarm query
     const availabilityQuery = queryFns.availabilityQuery({
@@ -75,7 +77,7 @@ ${Object.entries(context.endpoints)
     });
 
     return `resource "azurerm_monitor_scheduled_query_rules_alert" "alarm_availability_${i}" {
-  name                = replace(join("_",split("/", "\${local.name}-availability @ ${fullPath}")), "/\\\\{|\\\\}/", "")
+  name                = replace(join("_",split("/", "\${local.name}-availability @ ${methodPrefix}${fullPath}")), "/\\\\{|\\\\}/", "")
   resource_group_name = data.azurerm_resource_group.this.name
   location            = data.azurerm_resource_group.this.location
 
@@ -84,7 +86,7 @@ ${Object.entries(context.endpoints)
   }
 
   data_source_id          = "${dataSourceId}"
-  description             = "Availability for ${fullPath} is less than or equal to 99% - \${local.dashboard_base_addr}\${azurerm_portal_dashboard.this.id}"
+  description             = "Availability for ${methodPrefix}${fullPath} is less than or equal to 99% - \${local.dashboard_base_addr}\${azurerm_portal_dashboard.this.id}"
   enabled                 = true
   auto_mitigation_enabled = false
 
@@ -107,7 +109,7 @@ ${availabilityQuery}
 }
 
 resource "azurerm_monitor_scheduled_query_rules_alert" "alarm_time_${i}" {
-  name                = replace(join("_",split("/", "\${local.name}-responsetime @ ${fullPath}")), "/\\\\{|\\\\}/", "")
+  name                = replace(join("_",split("/", "\${local.name}-responsetime @ ${methodPrefix}${fullPath}")), "/\\\\{|\\\\}/", "")
   resource_group_name = data.azurerm_resource_group.this.name
   location            = data.azurerm_resource_group.this.location
 
@@ -116,7 +118,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "alarm_time_${i}" {
   }
 
   data_source_id          = "${dataSourceId}"
-  description             = "Response time for ${fullPath} is less than or equal to 1s - \${local.dashboard_base_addr}\${azurerm_portal_dashboard.this.id}"
+  description             = "Response time for ${methodPrefix}${fullPath} is less than or equal to 1s - \${local.dashboard_base_addr}\${azurerm_portal_dashboard.this.id}"
   enabled                 = true
   auto_mitigation_enabled = false
 
