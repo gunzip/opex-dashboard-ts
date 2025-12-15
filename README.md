@@ -176,37 +176,6 @@ The schema is:
 - **Versioned** - matches the package version for compatibility tracking
 - **Distributed** with the npm package for programmatic access
 
-### Programmatic Usage
-
-```typescript
-import { createBuilder, OA3Resolver, loadConfig } from "opex-dashboard";
-
-// Load configuration
-const config = loadConfig("./config.yaml");
-
-// Create resolver
-const resolver = new OA3Resolver(config.oa3_spec);
-
-// Create builder
-const builder = await createBuilder("azure-dashboard", {
-  resolver,
-  name: config.name,
-  resource_type: config.resource_type,
-  location: config.location,
-  timespan: config.timespan,
-  evaluation_frequency: config.evaluation_frequency,
-  evaluation_time_window: config.evaluation_time_window,
-  event_occurrences: config.event_occurrences,
-  resources: [config.data_source],
-  data_source_id: config.data_source,
-  action_groups_ids: config.action_groups,
-});
-
-// Generate dashboard
-const output = builder.produce(config.overrides || {});
-console.log(output);
-```
-
 ## CI/CD Integration
 
 ### Using the GitHub Workflow from Another Repository

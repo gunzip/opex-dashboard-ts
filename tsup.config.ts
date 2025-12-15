@@ -5,8 +5,8 @@ export default defineConfig({
   define: {
     __CLI_VERSION__: `"${process.env.npm_package_version || "0.0.0"}"`,
   },
-  dts: true,
-  entry: ["src/cli/index.ts", "src/index.ts"],
+  dts: false,
+  entry: ["src/cli/index.ts"],
   format: ["esm"],
   loader: {
     ".ini": "text",

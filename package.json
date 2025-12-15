@@ -7,7 +7,7 @@
   "description": "Generate operational dashboards from OpenAPI specifications",
   "main": "dist/index.js",
   "bin": {
-    "opex_dashboard": "dist/cli/index.js"
+    "generate-opex-dashboard": "dist/index.js"
   },
   "type": "module",
   "files": [
