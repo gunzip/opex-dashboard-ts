@@ -5,14 +5,14 @@
 import { describe, expect, it } from "vitest";
 
 import {
-    availabilityQuery,
-    responseCodesQuery,
-    responseTimeQuery,
+  availabilityQuery,
+  responseCodesQuery,
+  responseTimeQuery,
 } from "@/builders/queries/api-management.js";
 import {
-    availabilityQuery as appGwAvailabilityQuery,
-    responseCodesQuery as appGwResponseCodesQuery,
-    responseTimeQuery as appGwResponseTimeQuery,
+  availabilityQuery as appGwAvailabilityQuery,
+  responseCodesQuery as appGwResponseCodesQuery,
+  responseTimeQuery as appGwResponseTimeQuery,
 } from "@/builders/queries/app-gateway.js";
 
 describe("API Management Queries", () => {

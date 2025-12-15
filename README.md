@@ -151,6 +151,27 @@ evaluation_frequency: number # Default: 10 (minutes)
 evaluation_time_window: number # Default: 20 (minutes)
 event_occurrences: number # Default: 1
 
+### Terraform Configuration
+
+When generating Terraform packages (using `--package` option), you can optionally configure environment-specific settings:
+
+```yaml
+terraform:
+  environments:
+    dev:
+      prefix: string # Max 6 chars (required)
+      env_short: string # Max 1 char: 'd', 'u', 'p' (required)
+      backend: # Optional backend state configuration
+        resource_group_name: string
+        storage_account_name: string
+        container_name: string
+        key: string
+    uat: # Similar to dev
+    prod: # Similar to dev
+```
+
+If not specified, default versions are used and environment files contain empty placeholders.
+
 # Override defaults for specific endpoints
 overrides:
   hosts: # Use custom hosts instead of spec hosts
