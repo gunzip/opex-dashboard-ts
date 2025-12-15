@@ -116,10 +116,7 @@ async function generateHandler(options: {
 
     // Output: package or stdout
     if (options.package) {
-      const outputPath = getPackageOutputPath(
-        options.package,
-        options.templateType,
-      );
+      const outputPath = getPackageOutputPath(options.package);
       ensureDirectory(outputPath);
       builder.package(outputPath, overrides);
     } else {

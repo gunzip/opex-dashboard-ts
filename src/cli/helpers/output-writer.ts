@@ -4,7 +4,6 @@
  */
 
 import * as fs from "fs";
-import * as path from "path";
 
 /**
  * Ensure directory exists, creating it if necessary.
@@ -18,11 +17,8 @@ export function ensureDirectory(dirPath: string): void {
 /**
  * Get output directory path for packaged templates.
  */
-export function getPackageOutputPath(
-  baseDir: string,
-  templateName: string,
-): string {
-  return path.join(baseDir, templateName);
+export function getPackageOutputPath(baseDir: string): string {
+  return baseDir;
 }
 
 /**
