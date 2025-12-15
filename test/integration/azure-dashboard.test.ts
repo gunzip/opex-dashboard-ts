@@ -65,12 +65,7 @@ describe("Azure Dashboard Integration Tests - Snapshots", () => {
         const opexTfPath = join(tempDir, "opex.tf");
         const output = readFileSync(opexTfPath, "utf-8");
         
-        const snapshot = readFileSync(
-          "test/snapshots/iobackend_light_no_overrides.txt",
-          "utf-8",
-        );
-
-        expect(output).toBe(snapshot);
+        expect(output).toMatchSnapshot();
       } finally {
         rmSync(tempDir, { force: true, recursive: true });
       }
@@ -130,12 +125,7 @@ describe("Azure Dashboard Integration Tests - Snapshots", () => {
         const opexTfPath = join(tempDir, "opex.tf");
         const output = readFileSync(opexTfPath, "utf-8");
         
-        const snapshot = readFileSync(
-          "test/snapshots/iobackend_light_overrides.txt",
-          "utf-8",
-        );
-
-        expect(output).toBe(snapshot);
+        expect(output).toMatchSnapshot();
       } finally {
         rmSync(tempDir, { force: true, recursive: true });
       }
@@ -196,12 +186,7 @@ describe("Azure Dashboard Integration Tests - Snapshots", () => {
         const opexTfPath = join(tempDir, "opex.tf");
         const output = readFileSync(opexTfPath, "utf-8");
         
-        const snapshot = readFileSync(
-          "test/snapshots/iobackend_light_overrides_base_path.txt",
-          "utf-8",
-        );
-
-        expect(output).toBe(snapshot);
+        expect(output).toMatchSnapshot();
       } finally {
         rmSync(tempDir, { force: true, recursive: true });
       }
