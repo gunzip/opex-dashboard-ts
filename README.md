@@ -12,32 +12,15 @@ specifications.**
 - **High Performance** - Parallel rendering with deterministic ordering
 - **Type-Safe** - Full TypeScript with Zod runtime validation
 
-## What It Does
-
-| Template            | Description                                             | Status   |
-| ------------------- | ------------------------------------------------------- | -------- |
-| azure-dashboard     | Terraform configuration for Azure Dashboard with alarms | ✅ Ready |
-| azure-dashboard-raw | Raw JSON representation of Azure Dashboard              | ✅ Ready |
-| aws                 | CloudWatch Dashboard JSON                               | ⚒️ N/A   |
-| grafana             | Grafana Dashboard JSON                                  | ⚒️ N/A   |
-
 OpEx Dashboard is distributed as an **npm package** with two components:
 
 - **CLI tool** (`opex_dashboard`) - Command-line interface for end users
 - **TypeScript library** - Programmatic API for integration
 
-## Installation
-
-### Global Installation
+## Usage
 
 ```bash
-npm install -g opex-dashboard
-```
-
-### Use with npx
-
-```bash
-npx opex-dashboard generate --help
+npx @gunzip/opex-dashboard-ts generate --help
 ```
 
 ### Local Development
@@ -46,7 +29,6 @@ npx opex-dashboard generate --help
 git clone https://github.com/gunzip/opex-dashboard-ts.git
 cd opex-dashboard-ts
 pnpm install
-pnpm run generate:schema
 pnpm run build
 pnpm run dev
 ```
@@ -70,10 +52,10 @@ action_groups:
 
 ```bash
 # Output to stdout
-opex_dashboard generate -t azure-dashboard-raw -c config.yaml
+npx @gunzip/opex-dashboard-ts generate -t azure-dashboard-raw -c config.yaml
 
 # Save as Terraform package
-opex_dashboard generate -t azure-dashboard -c config.yaml --package ./output
+npx @gunzip/opex-dashboard-ts generate -t azure-dashboard -c config.yaml --package ./output
 ```
 
 ### 3. Deploy with Terraform
@@ -136,7 +118,7 @@ Options:
 
 Create a YAML configuration file:
 
-````yaml
+```yaml
 # yaml-language-server: $schema=./config.schema.json
 # Required fields
 oa3_spec: string # Path or URL to OpenAPI 3 specification
@@ -154,11 +136,8 @@ event_occurrences: integer # Default: 1
 availability_threshold`: float # Default: 0.99 (99%)
 response_time_threshold: float # Default: 1.0 second
 
-### Terraform Configuration
-
-When generating Terraform packages (using `--package` option), you can optionally configure environment-specific settings:
-
-```yaml
+# When generating Terraform packages (using `--package` option),
+# you can optionally configure environment-specific settings
 terraform:
   environments:
     dev:
@@ -171,19 +150,7 @@ terraform:
         key: string
     uat: # Similar to dev
     prod: # Similar to dev
-````
-
-If not specified, default versions are used and environment files contain empty
-placeholders.
-
-# Override defaults for specific endpoints
-
-overrides: hosts: # Use custom hosts instead of spec hosts -
-https://api.example.com endpoints: GET /api/v1/users/{id}: # Note: endpoints now
-include HTTP method availability_threshold: 0.95 response_time_threshold: 2 #
-... (see examples/ for full options)
-
-````
+```
 
 See [`examples/`](./examples) directory for complete configuration samples.
 
@@ -197,13 +164,13 @@ To enable schema validation in VS Code and other compatible editors, add this
 comment at the top of your YAML configuration file:
 
 ```yaml
-# yaml-language-server: $schema=./config.schema.json
-````
+# yaml-language-server: $schema=https://raw.githubusercontent.com/gunzip/opex-dashboard-ts/refs/heads/main/config.schema.json
+```
 
 The schema is:
 
 - **Automatically generated** during build from Zod schemas using
-  `pnpm run generate:schema`
+  `pnpm run build`
 - **Synchronized** with TypeScript types - any changes to configuration
   structure are reflected immediately
 - **Versioned** - matches the package version for compatibility tracking
@@ -286,51 +253,18 @@ This workflow will:
 - `pr_body` (optional): Description for the generated pull request
 - `base_branch` (optional): Base branch for the pull request (default: `main`)
 
-## Architecture
-
-### Project Structure
-
-```
-src/
-├── builders/          # Builder pattern implementation
-├── cli/               # CLI implementation
-├── core/              # Core functionality
-│   ├── config/        # Configuration loading & validation
-│   ├── errors/        # Custom error classes
-│   ├── resolver/      # OpenAPI spec parsing
-│   └── template/      # Template engine
-├── tags/              # Template filters
-├── utils/             # Utility functions
-└── constants/         # Constants and defaults
-
-assets/
-├── templates/         # Dashboard templates
-│   ├── azure_dashboard_raw.json
-│   ├── azure_dashboard_terraform.tf
-│   ├── app-gateway_queries/
-│   └── api-management_queries/
-└── terraform/         # Terraform boilerplate
-```
-
-### Design Patterns
-
-- **Builder Pattern**: Separates dashboard construction from representation
-- **Factory Pattern**: Type-safe builder creation
-- **Composition**: Terraform builder wraps raw JSON builder
-
 ## Development
 
 ### Setup
 
 ```bash
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
 
 ### Scripts
 
 ```bash
-pnpm run generate:schema        # Auto-generate config.schema.json from Zod
 pnpm run build                  # Bundle with tsup (ESM output)
 pnpm run dev                    # Watch mode for development
 pnpm run typecheck              # TypeScript compilation check
@@ -351,8 +285,6 @@ The project includes comprehensive unit and integration tests with Vitest:
 
 - **Unit Tests** (`test/unit/`) - Test individual functions and components
 - **Integration Tests** (`test/integration/`) - Test end-to-end workflows
-- **Coverage Thresholds**: 80% for statements, lines, and functions; 60% for
-  branches
 
 Run tests with automatic cleanup:
 
@@ -386,11 +318,3 @@ pnpm run typecheck             # TypeScript compilation check
 - Zod validation for runtime safety
 - File headers explaining module purpose
 - Colocated schemas (`*.schema.ts`)
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/my-feature`
-3. Commit changes: `git commit -m 'Add my feature'`
-4. Push to branch: `git push origin feature/my-feature`
-5. Open Pull Request
