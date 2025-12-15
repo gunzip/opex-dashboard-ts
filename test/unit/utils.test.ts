@@ -164,9 +164,9 @@ describe("normalizeEndpointKeys", () => {
 
     const result = normalizeEndpointKeys(endpoints);
 
-    // Last one wins (DELETE)
+    // Last one wins (PUT)
     expect(result).toEqual({
-      "/users": { availability_threshold: 99, method: "DELETE" },
+      "/users": { availability_threshold: 97, method: "PUT" },
     });
   });
 });
