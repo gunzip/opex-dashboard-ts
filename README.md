@@ -137,6 +137,7 @@ Options:
 Create a YAML configuration file:
 
 ````yaml
+# yaml-language-server: $schema=./config.schema.json
 # Required fields
 oa3_spec: string # Path or URL to OpenAPI 3 specification
 name: string # Dashboard name
