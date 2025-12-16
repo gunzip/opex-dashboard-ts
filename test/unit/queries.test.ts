@@ -46,7 +46,7 @@ describe("API Management Queries", () => {
       const ctx = { ...baseCtx, is_alarm: true, threshold: 0.95 };
       const result = availabilityQuery(ctx);
 
-      expect(result).toContain("let threshold = 0.05");
+      expect(result).toContain("let threshold = 0.95");
       expect(result).toContain("where availability < threshold");
       expect(result).not.toContain("render timechart");
     });
@@ -114,7 +114,7 @@ describe("App Gateway Queries", () => {
       const ctx = { ...baseCtx, is_alarm: true, threshold: 0.95 };
       const result = appGwAvailabilityQuery(ctx);
 
-      expect(result).toContain("let threshold = 0.05");
+      expect(result).toContain("let threshold = 0.95");
       expect(result).toContain("where availability < threshold");
     });
   });

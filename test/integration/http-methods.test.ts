@@ -76,9 +76,8 @@ describe("HTTP Methods - Integration Tests", () => {
     expect(output).toContain("/api/v1/services");
 
     // Verify custom thresholds are applied
-    // Note: App Gateway inverts availability thresholds (0.95 becomes 0.05)
-    expect(output).toContain("let threshold = 0.05");
-    expect(output).toContain("let threshold = 0.02");
+    expect(output).toContain("let threshold = 0.95");
+    expect(output).toContain("let threshold = 0.98");
     expect(output).toContain("let threshold = 1.5");
     expect(output).toContain("let threshold = 2");
   });
