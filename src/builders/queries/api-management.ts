@@ -29,8 +29,9 @@ export function availabilityQuery(ctx: QueryContext): string {
   // NOTE: Threshold inversion logic to match legacy template behavior
   // For thresholds other than the default (0.99), invert to (1 - threshold)
   // This converts availability thresholds to error rate thresholds
-  const displayThreshold =
-    threshold === 0.99 ? threshold : Math.round((1 - threshold) * 100) / 100;
+  // const displayThreshold =
+  //   threshold === 0.99 ? threshold : Math.round((1 - threshold) * 100) / 100;
+  const displayThreshold = threshold;
 
   return `${isAlarm ? "" : "\n"}let threshold = ${displayThreshold};
 AzureDiagnostics
