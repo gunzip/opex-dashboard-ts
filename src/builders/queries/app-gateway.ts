@@ -24,7 +24,7 @@ export function availabilityQuery(ctx: QueryContext): string {
   const method = props?.method;
   const path = props?.path ?? endpoint;
   const uriPattern = uriToRegex(basePath + path);
-  const hostsJson = JSON.stringify(ctx.hosts);
+  const hostsJson = JSON.stringify(ctx.hosts).replace(/,/g, ", ");
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
   // NOTE: Threshold inversion logic to match legacy template behavior
@@ -62,7 +62,7 @@ export function responseCodesQuery(ctx: QueryContext): string {
   const method = props?.method;
   const path = props?.path ?? endpoint;
   const uriPattern = uriToRegex(basePath + path);
-  const hostsJson = JSON.stringify(ctx.hosts);
+  const hostsJson = JSON.stringify(ctx.hosts).replace(/,/g, ", ");
   const timespan = ctx.timespan || "5m";
 
   return `\nlet api_url = "${uriPattern}";
@@ -93,7 +93,7 @@ export function responseTimeQuery(ctx: QueryContext): string {
   const method = props?.method;
   const path = props?.path ?? endpoint;
   const uriPattern = uriToRegex(basePath + path);
-  const hostsJson = JSON.stringify(ctx.hosts);
+  const hostsJson = JSON.stringify(ctx.hosts).replace(/,/g, ", ");
   const timespan = ctx.timespan || "5m";
   const isAlarm = ctx.is_alarm ?? false;
   const percentile = ctx.queries?.response_time_percentile ?? 95;
